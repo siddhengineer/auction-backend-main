@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/de/backend
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DB_NAME=auctionMaster
+      - DB_USER=auctionMaster
+      - DB_PASSWORD=auctionMaster
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
+    networks:
+      - de_backend
+
+  db:
+    image: postgres
+    container_name: db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=auctionMaster
+      - POSTGRES_PASSWORD=auctionMaster
+      - POSTGRES_DB=auctionMaster
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - de_backend
+
+volumes:
+  db_data:
+  
+networks:
+  de_backend:
